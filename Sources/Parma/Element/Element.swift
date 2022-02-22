@@ -47,8 +47,8 @@ enum Element: Hashable {
             return Self.item
         case "image":
             return Self.image
-//        case "code_block":
-//            return Self.codeBlock
+        case "code_block":
+            return Self.codeBlock
 //        case "block_quote":
 //            return Self.blockQuote
         default:
@@ -79,8 +79,8 @@ enum Element: Hashable {
             return "code"
         case .link:
             return "link"
-//        case .codeBlock:
-//            return "code_block"
+        case .codeBlock:
+            return "code_block"
 //        case .blockQuote:
 //            return "block_quote"
         default:

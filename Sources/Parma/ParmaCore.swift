@@ -28,6 +28,7 @@ class ParmaCore: NSObject {
     private let emphasisElementComposer = EmphasisElementComposer()
     private let linkElementComposer = LinkElementComposer()
     private let codeElementComposer = CodeElementComposer()
+    private let codeBlockComposer = CodeBlockComposer()
     private let headingElementComposer = HeadingElementComposer()
     private let paragraphElementComposer = ParagraphElementComposer()
     private let imageElementComposer = ImageElementComposer()
@@ -92,6 +93,7 @@ class ParmaCore: NSObject {
             .image : imageElementComposer,
             .list : listElementComposer,
             .item : listItemElementComposer,
+            .codeBlock : codeBlockComposer,
             .unknown : unknownElementComposer
         ]
     }

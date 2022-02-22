@@ -44,6 +44,9 @@ public protocol ParmaRenderable {
     /// - Parameter text: The text string captured from code.
     func code(_ text: String) -> Text
     
+    /// Define the code block style
+    func codeBlock(codeBlock: String) -> AnyView
+    
     /// Define the style of heading view.
     /// - Parameters:
     ///   - level: The level of heading.
@@ -86,6 +89,14 @@ extension ParmaRenderable {
     
     public func code(_ text: String) -> Text {
         Text(text).font(.system(.body, design: .monospaced))
+    }
+    
+    public func codeBlock(codeBlock: String) -> AnyView {
+        AnyView(
+            Text(codeBlock)
+                .font(.system(.body, design: .monospaced))
+                .fixedSize(horizontal: false, vertical: true)
+        )
     }
     
     public func heading(level: HeadingLevel?, textView: Text) -> Text {
