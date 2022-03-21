@@ -19,6 +19,6 @@ struct UnknownElementComposer: BlockElementComposer {
     func view(in context: ComposingContext, render: ParmaRenderable) -> AnyView {
         guard let view = context.views.last else { return AnyView(EmptyView()) }
         context.views = context.views.dropLast()
-        return render.paragraphBlock(view: view)
+        return render.paragraphBlock(view: view, parentElement: context.superElement)
     }
 }

@@ -11,7 +11,7 @@
 import Foundation
 
 /// Markdown elements.
-enum Element: Hashable {
+public enum Element: Hashable {
     case text, heading, paragraph, list, item, image, strong, emphasis, link, code, unknown, codeBlock, blockQuote
     
     /// If the specific element works as inline.

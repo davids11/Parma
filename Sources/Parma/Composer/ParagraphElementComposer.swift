@@ -32,7 +32,7 @@ class ParagraphElementComposer: BlockElementComposer {
         context.views = context.views.dropLast(maxIndex-minIndex)
 
         if views.count == 1, let view = views.first {
-            return render.paragraphBlock(view: view)
+            return render.paragraphBlock(view: view, parentElement: context.superElement)
         } else if views.count > 1 {
             let count = views.count
             return render.paragraphBlock(view: AnyView(
@@ -41,9 +41,9 @@ class ParagraphElementComposer: BlockElementComposer {
                         views[index]
                     }
                 }
-            ))
+            ), parentElement: context.superElement)
         } else {
-            return render.paragraphBlock(view: AnyView(EmptyView()))
+            return render.paragraphBlock(view: AnyView(EmptyView()), parentElement: context.superElement)
         }
     }
 }
