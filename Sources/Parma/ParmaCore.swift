@@ -174,6 +174,10 @@ extension ParmaCore: XMLParserDelegate {
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         guard string.trimmingCharacters(in: .whitespacesAndNewlines) != "" else { return }
-        context.foundCharacters += string.trimmingCharacters(in: .newlines)
+        if context.currentElement == .codeBlock {
+            context.foundCharacters += string
+        } else {
+            context.foundCharacters += string.trimmingCharacters(in: .newlines)
+        }
     }
 }
