@@ -142,6 +142,14 @@ extension ParmaCore: XMLParserDelegate {
 
             inlineComposers[element]?.willStop(in: context)
         } else {
+            if element == .codeBlock {
+                let newLine = "\n"
+                let endsWithNewLine = context.foundCharacters.suffix(newLine.count) == newLine
+                if endsWithNewLine {
+                    context.foundCharacters.removeLast(newLine.count)
+                }
+            }
+            
             if let text = blockComposers[element]?.text(in: context, render: render) {
                 context.views.append(AnyView(text))
             } else {
