@@ -15,3 +15,15 @@ public enum ListDelimiter: String {
     case period = "period"
     case parenthesis = "paren"
 }
+
+extension ListDelimiter {
+    
+    public var value: String {
+        switch self {
+        case .period:
+            return "."
+        case .parenthesis:
+            return ")"
+        }
+    }
+}

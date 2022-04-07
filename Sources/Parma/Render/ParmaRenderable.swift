@@ -123,25 +123,9 @@ extension ParmaRenderable {
     }
     
     public func listItem(attributes: ListAttributes, index: [Int], view: AnyView) -> AnyView {
-        let delimiter: String
-        switch attributes.delimiter {
-        case .period:
-            delimiter = "."
-        case .parenthesis:
-            delimiter = ")"
-        }
-
-        let separator: String
-        switch attributes.type {
-        case .bullet:
-            separator = index.count % 2 == 1 ? "•" : "◦"
-        case .ordered:
-            separator = index
-                .map({ String($0) })
-                .joined(separator: ".")
-                .appending(delimiter)
-        }
-
+        let delimiter = attributes.delimiter.value
+        let separator = attributes.type.value(for: index, delimiter: delimiter)
+        
         return AnyView(
             HStack(alignment: .top, spacing: 4) {
                 Text(separator)
