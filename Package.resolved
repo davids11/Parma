@@ -3,11 +3,11 @@
     "pins": [
       {
         "package": "Down",
-        "repositoryURL": "https://github.com/johnxnguyen/Down",
+        "repositoryURL": "https://github.com/davids11/Down.git",
         "state": {
-          "branch": null,
-          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
-          "version": "0.11.0"
+          "branch": "master",
+          "revision": "d3423d6e4f3bda10ef6373954e9be48b8a20a72f",
+          "version": null
         }
       }
     ]

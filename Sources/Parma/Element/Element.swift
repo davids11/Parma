@@ -12,12 +12,12 @@ import Foundation
 
 /// Markdown elements.
 public enum Element: Hashable {
-    case text, heading, paragraph, list, item, image, strong, emphasis, link, code, unknown, codeBlock, blockQuote
+    case text, heading, paragraph, list, item, image, strong, strikethrough, emphasis, link, code, unknown, codeBlock, blockQuote
     
     /// If the specific element works as inline.
     var isInline: Bool {
         switch self {
-        case .text, .strong, .emphasis, .link, .code:
+        case .text, .strong, .strikethrough, .emphasis, .link, .code:
             return true
         default:
             return false
@@ -31,6 +31,8 @@ public enum Element: Hashable {
             return Self.text
         case "strong":
             return Self.strong
+        case "strikethrough":
+            return Self.strikethrough
         case "emph":
             return Self.emphasis
         case "link":
@@ -73,6 +75,8 @@ public enum Element: Hashable {
             return "text"
         case .strong:
             return "strong"
+        case .strikethrough:
+            return "strikethrough"
         case .emphasis:
             return "emph"
         case .code:

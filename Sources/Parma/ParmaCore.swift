@@ -25,6 +25,7 @@ class ParmaCore: NSObject {
     // Composers
     private let plaintTextComposer = PlainTextComposer()
     private let strongElementComposer = StrongElementComposer()
+    private let strikethroughComposer = StrikethroughComposer()
     private let emphasisElementComposer = EmphasisElementComposer()
     private let linkElementComposer = LinkElementComposer()
     private let codeElementComposer = CodeElementComposer()
@@ -82,6 +83,7 @@ class ParmaCore: NSObject {
         [
             .text : plaintTextComposer,
             .strong : strongElementComposer,
+            .strikethrough: strikethroughComposer,
             .emphasis : emphasisElementComposer,
             .link : linkElementComposer,
             .code : codeElementComposer,
