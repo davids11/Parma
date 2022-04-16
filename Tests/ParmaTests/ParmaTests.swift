@@ -20,6 +20,22 @@ class PersistenceServiceTests: XCTest {
         sut.start()
     }
     
+    func testCodeDiff() throws {
+        let content =
+"""
+``````
+protocol Store {
+  ~~func data(for key: Strings) -> Data?~~
+    func element<T>(for key: String) -> T?
+}
+``````
+"""
+        
+        let sut = try ParmaCore(content)
+        
+        sut.start()
+    }
+    
     func testStrikeThrough() throws {
         let content =
 """

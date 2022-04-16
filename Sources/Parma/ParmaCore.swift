@@ -30,6 +30,7 @@ class ParmaCore: NSObject {
     private let linkElementComposer = LinkElementComposer()
     private let codeElementComposer = CodeElementComposer()
     private let codeBlockComposer = CodeBlockComposer()
+    private let codeDiffComposer = CodeDiffComposer()
     private let headingElementComposer = HeadingElementComposer()
     private let paragraphElementComposer = ParagraphElementComposer()
     private let imageElementComposer = ImageElementComposer()
@@ -45,6 +46,7 @@ class ParmaCore: NSObject {
     // Temporary storage
     private var texts: Array<Text> = []
     private var foundCharacters = ""
+    private var openBlockElement: Element?
     private var concatenatedText: Text {
         return texts.reduce(Text(""), +)
     }
@@ -96,6 +98,7 @@ class ParmaCore: NSObject {
             .list : listElementComposer,
             .item : listItemElementComposer,
             .codeBlock : codeBlockComposer,
+            .codeDiff: codeDiffComposer,
             .unknown : unknownElementComposer
         ]
     }
@@ -114,6 +117,8 @@ extension ParmaCore: XMLParserDelegate {
         // Start new element
         let element = Element.element(elementName)
         
+        print("Start: \(elementName)")
+
         if element != .unknown {
             context.enter(in: element)
         }
@@ -123,13 +128,24 @@ extension ParmaCore: XMLParserDelegate {
         if element.isInline {
             inlineComposers[element]?.willStart(in: context)
         } else {
-            blockComposers[element]?.willStart(in: context)
+            if element == .codeDiff {
+                // close open code diff element, nested code diffs isn't supported
+                if openBlockElement != nil {
+                    openBlockElement = nil
+                } else {
+                    openBlockElement = element
+                }
+                
+                blockComposers[element]?.willStart(in: context)
+            } else if openBlockElement == nil {
+                blockComposers[element]?.willStart(in: context)
+            }
         }
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         let element = Element.element(elementName)
-        
+                
         if element.isInline {
             if let text = inlineComposers[element]?.text(in: context, render: render) {
                 if let superEl = context.superElement, superEl.isInline {
@@ -144,7 +160,7 @@ extension ParmaCore: XMLParserDelegate {
 
             inlineComposers[element]?.willStop(in: context)
         } else {
-            if element == .codeBlock {
+             if element == .codeBlock {
                 let newLine = "\n"
                 let endsWithNewLine = context.foundCharacters.suffix(newLine.count) == newLine
                 if endsWithNewLine {
@@ -152,27 +168,34 @@ extension ParmaCore: XMLParserDelegate {
                 }
             }
             
-            if let text = blockComposers[element]?.text(in: context, render: render) {
-                context.views.append(AnyView(text))
-            } else {
-                if texts.count != 0 {
-                    context.views.append(AnyView(concatenatedText))
-                }
-            }
-            
-            texts = []
-            context.texts = []
-            
-            if let view = blockComposers[element]?.view(in: context, render: render) {
-                if context.stack.count > 1 {
-                    context.views.append(view)
+            if openBlockElement == nil {
+                if let text = blockComposers[element]?.text(in: context, render: render) {
+                    context.views.append(AnyView(text))
                 } else {
-                    context.views = []
-                    views.append(view)
+                    if texts.count != 0 {
+                        context.views.append(AnyView(concatenatedText))
+                    }
                 }
+                
+                if element != .codeDiff {
+                    texts = []
+                    context.texts = []
+                }
+                
+                if let view = blockComposers[element]?.view(in: context, render: render) {
+                    if context.stack.count > 1 {
+                        context.views.append(view)
+                    } else {
+                        context.views = []
+                        views.append(view)
+                    }
+                }
+                
+                texts = []
+                context.texts = []
+                
+                blockComposers[element]?.willStop(in: context)
             }
-            
-            blockComposers[element]?.willStop(in: context)
         }
         
         context.foundCharacters = ""

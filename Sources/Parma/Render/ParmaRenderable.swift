@@ -51,6 +51,12 @@ public protocol ParmaRenderable {
     /// Define the code block style
     func codeBlock(codeBlock: String) -> AnyView
     
+    /// Defince code style within a diff block
+    func codeDiffLine(_ text: Text) -> Text
+    
+    /// Define the code block style
+    func codeDiffBlock(view: AnyView) -> AnyView
+    
     /// Define the style of heading view.
     /// - Parameters:
     ///   - level: The level of heading.
@@ -97,6 +103,14 @@ extension ParmaRenderable {
     
     public func code(_ text: String) -> Text {
         Text(text).font(.system(.body, design: .monospaced))
+    }
+    
+    public func codeDiffLine(_ text: Text) -> Text {
+        text.font(.system(.body, design: .monospaced))
+    }
+    
+    public func codeDiffBlock(view: AnyView) -> AnyView {
+        view
     }
     
     public func codeBlock(codeBlock: String) -> AnyView {

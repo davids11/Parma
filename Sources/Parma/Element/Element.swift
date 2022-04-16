@@ -12,7 +12,7 @@ import Foundation
 
 /// Markdown elements.
 public enum Element: Hashable {
-    case text, heading, paragraph, list, item, image, strong, strikethrough, emphasis, link, code, unknown, codeBlock, blockQuote
+    case text, heading, paragraph, list, item, image, strong, strikethrough, emphasis, link, code, unknown, codeBlock, codeDiff, blockQuote
     
     /// If the specific element works as inline.
     var isInline: Bool {
@@ -28,33 +28,35 @@ public enum Element: Hashable {
     static func element(_ elementText: String) -> Element {
         switch elementText {
         case "text":
-            return Self.text
+            return .text
         case "strong":
-            return Self.strong
+            return .strong
         case "strikethrough":
-            return Self.strikethrough
+            return .strikethrough
         case "emph":
-            return Self.emphasis
+            return .emphasis
         case "link":
-            return Self.link
+            return .link
         case "code":
-            return Self.code
+            return .code
         case "heading":
-            return Self.heading
+            return .heading
         case "paragraph":
-            return Self.paragraph
+            return .paragraph
         case "list":
-            return Self.list
+            return .list
         case "item":
-            return Self.item
+            return .item
         case "image":
-            return Self.image
+            return .image
         case "code_block":
-            return Self.codeBlock
+            return .codeBlock
+        case "diff":
+            return .codeDiff
 //        case "block_quote":
 //            return Self.blockQuote
         default:
-            return Self.unknown
+            return .unknown
         }
     }
     
@@ -85,6 +87,8 @@ public enum Element: Hashable {
             return "link"
         case .codeBlock:
             return "code_block"
+        case .codeDiff:
+            return "diff"
 //        case .blockQuote:
 //            return "block_quote"
         default:
