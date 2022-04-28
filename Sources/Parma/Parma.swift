@@ -9,7 +9,11 @@ public struct Parma: View {
     
     // MARK: - Public property
     public var body: some View {
-        content != nil ? AnyView(VStack(alignment: alignment) { content }) : errorView
+        if let content = content {
+            VStack(alignment: alignment) { content }
+        } else {
+            errorView
+        }
     }
     
     // MARK: - Initialization

@@ -117,8 +117,6 @@ extension ParmaCore: XMLParserDelegate {
         // Start new element
         let element = Element.element(elementName)
         
-        print("Start: \(elementName)")
-
         if element != .unknown {
             context.enter(in: element)
         }
