@@ -46,7 +46,8 @@ class ParmaCore: NSObject {
     // Temporary storage
     private var texts: Array<Text> = []
     private var foundCharacters = ""
-    private var openBlockElement: Element?
+    private var openDiff = false
+    private var numberOfIndent = 0
     private var concatenatedText: Text {
         return texts.reduce(Text(""), +)
     }
@@ -128,14 +129,14 @@ extension ParmaCore: XMLParserDelegate {
         } else {
             if element == .codeDiff {
                 // close open code diff element, nested code diffs isn't supported
-                if openBlockElement != nil {
-                    openBlockElement = nil
+                if openDiff {
+                    openDiff = false
                 } else {
-                    openBlockElement = element
+                    openDiff = true
                 }
                 
                 blockComposers[element]?.willStart(in: context)
-            } else if openBlockElement == nil {
+            } else if !openDiff {
                 blockComposers[element]?.willStart(in: context)
             }
         }
@@ -166,7 +167,7 @@ extension ParmaCore: XMLParserDelegate {
                 }
             }
             
-            if openBlockElement == nil {
+            if !openDiff {
                 if let text = blockComposers[element]?.text(in: context, render: render) {
                     context.views.append(AnyView(text))
                 } else {
@@ -205,7 +206,29 @@ extension ParmaCore: XMLParserDelegate {
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         guard string.trimmingCharacters(in: .whitespacesAndNewlines) != "" else { return }
-        if context.currentElement == .codeBlock {
+        
+        if openDiff {
+            let append: (Int) -> Void = { numberOfIndent in
+                // TODO: improve construct indent (Int * String)
+                let indent = numberOfIndent == 0 ? "" : (1...numberOfIndent).reduce(into: "") { result, _ in result += "    " }
+                self.context.foundCharacters += indent + string
+            }
+            
+            let checkSuffix: ([String]) -> Bool = { input in input.contains(where: { string.hasSuffix($0) }) }
+            
+            let open = ["{", "["]
+            let close = ["}", "]"]
+            
+            if checkSuffix(open) {
+                append(numberOfIndent)
+                numberOfIndent += 1
+            } else if checkSuffix(close) {
+                numberOfIndent = max(0, numberOfIndent - 1)
+                append(numberOfIndent)
+            } else {
+                append(context.foundCharacters.isEmpty ? numberOfIndent : 0)
+            }
+        } else if context.currentElement == .codeBlock {
             context.foundCharacters += string
         } else {
             context.foundCharacters += string.trimmingCharacters(in: .newlines)
