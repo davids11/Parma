@@ -208,10 +208,8 @@ extension ParmaCore: XMLParserDelegate {
         guard string.trimmingCharacters(in: .whitespacesAndNewlines) != "" else { return }
         
         if openDiff {
-            let append: (Int) -> Void = { numberOfIndent in
-                // TODO: improve construct indent (Int * String)
-                let indent = numberOfIndent == 0 ? "" : (1...numberOfIndent).reduce(into: "") { result, _ in result += "    " }
-                self.context.foundCharacters += indent + string
+            let append: (Int) -> Void = {
+                self.context.foundCharacters += String(repeating: "    ", count: $0) + string
             }
             
             let checkSuffix: ([String]) -> Bool = { input in input.contains(where: { string.hasSuffix($0) }) }
