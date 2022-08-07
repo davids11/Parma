@@ -214,8 +214,9 @@ extension ParmaCore: XMLParserDelegate {
             
             let checkSuffix: ([String]) -> Bool = { input in input.contains(where: { string.hasSuffix($0) }) }
             
-            let open = ["{", "["]
-            let close = ["}", "]"]
+            // TODO: keep a stack of open brackets to support correct closing including []
+            let open = ["{"]
+            let close = ["}"]
             
             if checkSuffix(open) {
                 append(numberOfIndent)
